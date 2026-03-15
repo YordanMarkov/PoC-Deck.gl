@@ -1,0 +1,1256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Redbeech OS — Import &amp; Dependency Overview (Deeproot + Streamline)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Red+Hat+Display:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #fafbfc;
+  --card: #ffffff;
+  --fg: #1a1a2e;
+  --fg2: #4a4a6a;
+  --fg3: #8888a8;
+  --border: rgba(0,0,0,0.08);
+  --accent: #2563eb;
+  --accent-bg: rgba(37,99,235,0.06);
+  --purple: #7c3aed;
+  --purple-bg: rgba(124,58,237,0.06);
+  --emerald: #059669;
+  --emerald-bg: rgba(5,150,105,0.06);
+  --amber: #d97706;
+  --amber-bg: rgba(217,119,6,0.06);
+  --rose: #e11d48;
+  --rose-bg: rgba(225,29,72,0.06);
+  --sky: #0284c7;
+  --sky-bg: rgba(2,132,199,0.06);
+  --code-bg: #f3f4f6;
+  --radius: 0.75rem;
+}
+.dark {
+  --bg: #0f1117;
+  --card: #1a1d2e;
+  --fg: #e8eaf0;
+  --fg2: #a0a4b8;
+  --fg3: #5c6078;
+  --border: rgba(255,255,255,0.08);
+  --accent-bg: rgba(96,165,250,0.1);
+  --purple-bg: rgba(167,139,250,0.1);
+  --emerald-bg: rgba(52,211,153,0.1);
+  --amber-bg: rgba(251,191,36,0.1);
+  --rose-bg: rgba(251,113,133,0.1);
+  --sky-bg: rgba(56,189,248,0.1);
+  --code-bg: #252836;
+}
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:'Red Hat Display',system-ui,sans-serif;
+  background:var(--bg);
+  color:var(--fg);
+  line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+}
+
+/* Layout */
+.container{max-width:1100px;margin:0 auto;padding:2rem 1.5rem 4rem}
+
+/* Header */
+.page-header{
+  text-align:center;
+  padding:3rem 0 2rem;
+  border-bottom:1px solid var(--border);
+  margin-bottom:2.5rem;
+}
+.page-header h1{
+  font-size:2rem;font-weight:700;letter-spacing:-0.02em;
+  background:linear-gradient(135deg,var(--accent),var(--purple));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;
+}
+.page-header .subtitle{
+  font-size:0.9375rem;color:var(--fg2);margin-top:0.5rem;max-width:700px;margin-inline:auto;
+}
+.page-header .meta{
+  display:flex;gap:1.5rem;justify-content:center;margin-top:1rem;font-size:0.8125rem;color:var(--fg3);
+}
+.page-header .meta span{display:flex;align-items:center;gap:0.375rem}
+
+/* Stats row */
+.stats-row{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:1rem;margin-bottom:2.5rem;
+}
+.stat-card{
+  background:var(--card);border:1px solid var(--border);border-radius:var(--radius);
+  padding:1.25rem;text-align:center;
+}
+.stat-value{font-size:1.75rem;font-weight:700;letter-spacing:-0.02em}
+.stat-label{font-size:0.75rem;font-weight:500;color:var(--fg3);text-transform:uppercase;letter-spacing:0.05em;margin-top:0.25rem}
+
+/* TOC */
+.toc{
+  background:var(--card);border:1px solid var(--border);border-radius:var(--radius);
+  padding:1.5rem 2rem;margin-bottom:2.5rem;
+}
+.toc h2{font-size:0.875rem;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;color:var(--fg3);margin-bottom:0.75rem}
+.toc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:0.25rem 1.5rem}
+.toc a{
+  font-size:0.875rem;color:var(--fg2);text-decoration:none;display:block;padding:0.25rem 0;
+  transition:color 0.15s;
+}
+.toc a:hover{color:var(--accent)}
+.toc a .num{color:var(--fg3);font-family:'JetBrains Mono',monospace;font-size:0.75rem;margin-right:0.375rem}
+
+/* Section */
+.section{margin-bottom:2.5rem}
+.section-header{
+  display:flex;align-items:center;gap:0.75rem;margin-bottom:1rem;
+  padding-bottom:0.75rem;border-bottom:2px solid var(--border);
+}
+.section-header h2{font-size:1.25rem;font-weight:700;letter-spacing:-0.01em}
+.section-badge{
+  font-size:0.6875rem;font-weight:600;padding:0.125rem 0.5rem;border-radius:999px;
+}
+
+/* Package card */
+.pkg{
+  background:var(--card);border:1px solid var(--border);border-radius:var(--radius);
+  padding:1.25rem 1.5rem;margin-bottom:0.75rem;
+  transition:box-shadow 0.15s;
+}
+.pkg:hover{box-shadow:0 4px 12px rgba(0,0,0,0.06)}
+
+.pkg-header{display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;margin-bottom:0.5rem}
+.pkg-name{font-family:'JetBrains Mono',monospace;font-size:0.9375rem;font-weight:600;color:var(--accent)}
+.pkg-version{font-family:'JetBrains Mono',monospace;font-size:0.75rem;color:var(--fg3);background:var(--code-bg);padding:0.125rem 0.5rem;border-radius:0.25rem;white-space:nowrap}
+.pkg-desc{font-size:0.8125rem;color:var(--fg2);margin-bottom:0.625rem}
+
+.pkg-stats{display:flex;flex-wrap:wrap;gap:0.75rem;margin-bottom:0.625rem}
+.pkg-stat{
+  font-size:0.6875rem;font-weight:500;padding:0.125rem 0.5rem;border-radius:0.375rem;
+  display:flex;align-items:center;gap:0.25rem;
+}
+
+/* Import list */
+.import-list{
+  font-family:'JetBrains Mono',monospace;font-size:0.75rem;
+  background:var(--code-bg);border-radius:0.5rem;padding:0.625rem 0.875rem;
+  line-height:1.7;color:var(--fg2);
+}
+.import-list .kw{color:var(--purple)}
+.import-list .fn{color:var(--accent)}
+.import-list .type{color:var(--emerald)}
+.import-list .comp{color:var(--amber)}
+.import-list .sep{color:var(--fg3)}
+
+/* Internal deps table */
+.dep-table{width:100%;border-collapse:collapse;font-size:0.8125rem}
+.dep-table th{
+  text-align:left;padding:0.625rem 0.875rem;font-weight:600;font-size:0.75rem;
+  text-transform:uppercase;letter-spacing:0.04em;color:var(--fg3);
+  border-bottom:2px solid var(--border);background:var(--code-bg);
+}
+.dep-table td{padding:0.625rem 0.875rem;border-bottom:1px solid var(--border);vertical-align:top}
+.dep-table tr:last-child td{border-bottom:none}
+.dep-table code{
+  font-family:'JetBrains Mono',monospace;font-size:0.75rem;
+  background:var(--code-bg);padding:0.0625rem 0.375rem;border-radius:0.25rem;
+}
+
+/* Color-coded badges */
+.b-blue{background:var(--accent-bg);color:var(--accent)}
+.b-purple{background:var(--purple-bg);color:var(--purple)}
+.b-emerald{background:var(--emerald-bg);color:var(--emerald)}
+.b-amber{background:var(--amber-bg);color:var(--amber)}
+.b-rose{background:var(--rose-bg);color:var(--rose)}
+.b-sky{background:var(--sky-bg);color:var(--sky)}
+
+/* Architecture diagram */
+.arch{
+  background:var(--card);border:1px solid var(--border);border-radius:var(--radius);
+  padding:1.5rem;font-family:'JetBrains Mono',monospace;font-size:0.75rem;
+  line-height:1.8;overflow-x:auto;white-space:pre;color:var(--fg2);
+}
+.arch .h{color:var(--accent);font-weight:600}
+.arch .p{color:var(--purple)}
+.arch .e{color:var(--emerald)}
+.arch .a{color:var(--amber)}
+.arch .r{color:var(--rose)}
+
+/* Notes */
+.note{
+  background:var(--amber-bg);border-left:3px solid var(--amber);
+  padding:0.75rem 1rem;border-radius:0 var(--radius) var(--radius) 0;
+  font-size:0.8125rem;color:var(--fg2);margin:1rem 0;
+}
+.note strong{color:var(--fg)}
+
+/* Theme toggle */
+.theme-toggle{
+  position:fixed;bottom:1rem;right:1rem;z-index:999;
+  width:2.5rem;height:2.5rem;border-radius:0.75rem;
+  border:1px solid var(--border);background:var(--card);color:var(--fg);
+  cursor:pointer;display:flex;align-items:center;justify-content:center;
+}
+.theme-toggle:hover{box-shadow:0 4px 12px rgba(0,0,0,0.15)}
+
+/* Responsive */
+@media(max-width:640px){
+  .container{padding:1rem}
+  .page-header h1{font-size:1.5rem}
+  .stats-row{grid-template-columns:repeat(2,1fr)}
+  .toc-grid{grid-template-columns:1fr}
+}
+
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:rgba(0,0,0,0.15);border-radius:3px}
+</style>
+</head>
+<body>
+<button class="theme-toggle" onclick="document.documentElement.classList.toggle('dark')" title="Toggle dark mode">
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+</button>
+
+<div class="container">
+
+<!-- ================================================================
+     HEADER
+     ================================================================ -->
+<div class="page-header">
+  <h1>Redbeech OS — Import &amp; Dependency Map</h1>
+  <p class="subtitle">
+    Complete overview of every external package and internal shared module used across
+    <strong>src/app/</strong> (Streamline, TopBar, shared) and <strong>src/modules/deeprootcore/</strong>.
+    Notion module excluded.
+  </p>
+  <div class="meta">
+    <span>
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+      9 Mar 2026
+    </span>
+    <span>
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/></svg>
+      923 source files
+    </span>
+    <span>
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+      ~114k lines
+    </span>
+  </div>
+</div>
+
+<!-- ================================================================
+     STATS
+     ================================================================ -->
+<div class="stats-row">
+  <div class="stat-card">
+    <div class="stat-value" style="color:var(--accent)">582</div>
+    <div class="stat-label">Files in src/app</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-value" style="color:var(--purple)">341</div>
+    <div class="stat-label">Files in deeprootcore</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-value" style="color:var(--emerald)">30</div>
+    <div class="stat-label">External Packages</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-value" style="color:var(--amber)">558</div>
+    <div class="stat-label">React Imports</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-value" style="color:var(--rose)">299</div>
+    <div class="stat-label">Lucide Icon Imports</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-value" style="color:var(--sky)">308</div>
+    <div class="stat-label">i18n Imports</div>
+  </div>
+</div>
+
+<!-- ================================================================
+     TABLE OF CONTENTS
+     ================================================================ -->
+<div class="toc">
+  <h2>Table of Contents</h2>
+  <div class="toc-grid">
+    <a href="#core"><span class="num">01</span> Core Framework (React, ReactDOM)</a>
+    <a href="#routing"><span class="num">02</span> Routing (react-router v7)</a>
+    <a href="#state"><span class="num">03</span> Server State (TanStack Query v5)</a>
+    <a href="#i18n"><span class="num">04</span> Internationalization (i18next)</a>
+    <a href="#icons"><span class="num">05</span> Icons (lucide-react)</a>
+    <a href="#animation"><span class="num">06</span> Animation (Motion)</a>
+    <a href="#toast"><span class="num">07</span> Toasts (Sonner)</a>
+    <a href="#flow"><span class="num">08</span> Visual Flow (React Flow v11)</a>
+    <a href="#dnd"><span class="num">09</span> Drag &amp; Drop (dnd-kit)</a>
+    <a href="#supabase"><span class="num">10</span> Backend (Supabase JS v2)</a>
+    <a href="#charts"><span class="num">11</span> Charts (Recharts)</a>
+    <a href="#dates"><span class="num">12</span> Date Handling (date-fns)</a>
+    <a href="#markdown"><span class="num">13</span> Markdown (react-markdown)</a>
+    <a href="#virtual"><span class="num">14</span> Virtualization (TanStack Virtual)</a>
+    <a href="#layout"><span class="num">15</span> Graph Layout (dagre)</a>
+    <a href="#ui-primitives"><span class="num">16</span> UI Primitives (Radix + shadcn)</a>
+    <a href="#css"><span class="num">17</span> CSS Utilities (clsx, cva, tw-merge)</a>
+    <a href="#code"><span class="num">18</span> Code Highlighting (highlight.js)</a>
+    <a href="#misc"><span class="num">19</span> Misc Utilities (zod, idb, etc.)</a>
+    <a href="#testing"><span class="num">20</span> Testing (Vitest, Testing Library)</a>
+    <a href="#internal"><span class="num">21</span> Internal Shared Modules</a>
+    <a href="#arch"><span class="num">22</span> Dependency Architecture Diagram</a>
+    <a href="#rules"><span class="num">23</span> Import Rules &amp; Conventions</a>
+  </div>
+</div>
+
+<!-- ================================================================
+     SECTIONS
+     ================================================================ -->
+
+<!-- 01 CORE -->
+<div class="section" id="core">
+  <div class="section-header">
+    <h2>01 &mdash; Core Framework</h2>
+    <span class="section-badge b-blue">Foundation</span>
+  </div>
+
+  <div class="pkg">
+    <div class="pkg-header">
+      <span class="pkg-name">react</span>
+      <span class="pkg-version">18.3.1 (peer dep)</span>
+    </div>
+    <div class="pkg-desc">Core React library. Imported in virtually every component and hook file.</div>
+    <div class="pkg-stats">
+      <span class="pkg-stat b-blue">558 import statements</span>
+      <span class="pkg-stat b-purple">#1 most imported</span>
+    </div>
+    <div class="import-list">
+<span class="kw">import</span> { <span class="fn">useState</span><span class="sep">,</span> <span class="fn">useCallback</span><span class="sep">,</span> <span class="fn">useEffect</span><span class="sep">,</span> <span class="fn">useMemo</span><span class="sep">,</span> <span class="fn">useRef</span><span class="sep">,</span> <span class="fn">memo</span><span class="sep">,</span>
+         <span class="fn">lazy</span><span class="sep">,</span> <span class="comp">Suspense</span><span class="sep">,</span> <span class="fn">useContext</span><span class="sep">,</span> <span class="fn">createContext</span><span class="sep">,</span> <span class="fn">forwardRef</span><span class="sep">,</span>
+         <span class="fn">startTransition</span><span class="sep">,</span> <span class="fn">useLayoutEffect</span><span class="sep">,</span> <span class="fn">useReducer</span><span class="sep">,</span> <span class="fn">useImperativeHandle</span> } <span class="kw">from</span> <span class="type">'react'</span>;
+<span class="kw">import type</span> { <span class="type">ReactNode</span><span class="sep">,</span> <span class="type">RefObject</span><span class="sep">,</span> <span class="type">FC</span><span class="sep">,</span> <span class="type">Dispatch</span><span class="sep">,</span> <span class="type">SetStateAction</span> } <span class="kw">from</span> <span class="type">'react'</span>;
+    </div>
+    <div style="margin-top:0.75rem;font-size:0.75rem;color:var(--fg3)">
+      <strong>Top hooks by usage:</strong>
+      useState&nbsp;(328) &middot;
+      useCallback&nbsp;(295) &middot;
+      memo&nbsp;(291) &middot;
+      useEffect&nbsp;(269) &middot;
+      useRef&nbsp;(183) &middot;
+      useMemo&nbsp;(175) &middot;
+      lazy&nbsp;(30) &middot;
+      Suspense&nbsp;(31) &middot;
+      useContext&nbsp;(8)
+    </div>
+  </div>
+
+  <div class="pkg">
+    <div class="pkg-header">
+      <span class="pkg-name">react-dom</span>
+      <span class="pkg-version">18.3.1 (peer dep)</span>
+    </div>
+    <div class="pkg-desc">Only used for <code>createPortal</code> (modals, popovers, context menus rendered outside DOM tree).</div>
+    <div class="pkg-stats">
+      <span class="pkg-stat b-blue">42 import statements</span>
+    </div>
+    <div class="import-list">
+<span class="kw">import</span> { <span class="fn">createPortal</span> } <span class="kw">from</span> <span class="type">'react-dom'</span>;
+    </div>
+  </div>
+</div>
+
+<!-- 02 ROUTING -->
+<div class="section" id="routing">
+  <div class="section-header">
+    <h2>02 &mdash; Routing</h2>
+    <span class="section-badge b-purple">Navigation</span>
+  </div>
+
+  <div class="pkg">
+    <div class="pkg-header">
+      <span class="pkg-name">react-router</span>
+      <span class="pkg-version">^7.13.0</span>
+    </div>
+    <div class="pkg-desc">
+      Client-side routing. <strong>Important:</strong> We use <code>react-router</code>, NOT <code>react-router-dom</code>.
+      The app uses Data mode with <code>createBrowserRouter</code> + <code>RouterProvider</code>.
+    </div>
+    <div class="pkg-stats">
+      <span class="pkg-stat b-blue">61 import statements</span>
+      <span class="pkg-stat b-rose">Do NOT use react-router-dom</span>
+    </div>
+    <div class="import-list">
+<span class="kw">import</span> { <span class="fn">useNavigate</span><span class="sep">,</span> <span class="fn">useSearchParams</span><span class="sep">,</span> <span class="fn">useLocation</span><span class="sep">,</span> <span class="fn">useParams</span><span class="sep">,</span>
+         <span class="comp">Navigate</span><span class="sep">,</span> <span class="comp">Route</span><span class="sep">,</span> <span class="comp">Routes</span><span class="sep">,</span> <span class="comp">BrowserRouter</span> } <span class="kw">from</span> <span class="type">'react-router'</span>;
+<span class="kw">import type</span> { <span class="type">NavigateFunction</span> } <span class="kw">from</span> <span class="type">'react-router'</span>;
+    </div>
+    <div class="note">
+      <strong>Rule:</strong> <code>useNavigate</code> must <strong>not</strong> be used in <code>useDeeprootNavigation.ts</code> (hooks-order crash).
+      Use <code>setSearchParams</code> from <code>useSearchParams()</code> instead.
+    </div>
+    <div style="margin-top:0.5rem;font-size:0.75rem;color:var(--fg3)">
+      <strong>Usage counts:</strong>
+      useNavigate&nbsp;(47) &middot;
+      useSearchParams&nbsp;(15) &middot;
+      useLocation&nbsp;(11) &middot;
+      useParams&nbsp;(7)
+    </div>
+  </div>
+</div>
+
+<!-- 03 STATE -->
+<div class="section" id="state">
+  <div class="section-header">
+    <h2>03 &mdash; Server State Management</h2>
+    <span class="section-badge b-emerald">Data Fetching</span>
+  </div>
+
+  <div class="pkg">
+    <div class="pkg-header">
+      <span class="pkg-name">@tanstack/react-query</span>
+      <span class="pkg-version">^5.90.16</span>
+    </div>
+    <div class="pkg-desc">
+      Server state, caching, background refetch, optimistic updates. Core data layer for Deeproot CRM.
+      Used extensively in hooks under <code>deeprootcore/hooks/queries/</code>.
+    </div>
+    <div class="pkg-stats">
+      <span class="pkg-stat b-blue">79 import statements</span>
+      <span class="pkg-stat b-emerald">Primary data layer</span>
+    </div>
+    <div class="import-list">
+<span class="kw">import</span> { <span class="fn">useQuery</span><span class="sep">,</span> <span class="fn">useQueryClient</span><span class="sep">,</span> <span class="fn">useMutation</span><span class="sep">,</span> <span class="fn">useQueries</span><span class="sep">,</span>
+         <span class="comp">QueryClient</span><span class="sep">,</span> <span class="comp">QueryClientProvider</span><span class="sep">,</span> <span class="fn">keepPreviousData</span> } <span class="kw">from</span> <span class="type">'@tanstack/react-query'</span>;
+<span class="kw">import type</span> { <span class="type">QueryKey</span><span class="sep">,</span> <span class="type">UseMutationResult</span> } <span class="kw">from</span> <span class="type">'@tanstack/react-query'</span>;
+    </div>
+    <div style="margin-top:0.5rem;font-size:0.75rem;color:var(--fg3)">
+      <strong>Usage counts:</strong>
+      useQueryClient&nbsp;(51) &middot;
+      useQuery&nbsp;(38) &middot;
+      useMutation&nbsp;(21) &middot;
+      useQueries&nbsp;(4)
+    </div>
+  </div>
+</div>
+
+<!-- 04 I18N -->
+<div class="section" id="i18n">
+  <div class="section-header">
+    <h2>04 &mdash; Internationalization</h2>
+    <span class="section-badge b-amber">i18n</span>
+  </div>
+
+  <div class="pkg">
+    <div class="pkg-header">
+      <span class="pkg-name">react-i18next</span>
+      <span class="pkg-version">^16.5.1</span>
+    </div>
+    <div class="pkg-desc">
+      React bindings for i18next. 10 languages supported (en, nl, de, fr, es, it, ja, zh, ar, he).
+      <strong>New keys only added to en.json + nl.json</strong> (fallback handles the rest).
+    </div>
+    <div class="pkg-stats">
+      <span class="pkg-stat b-blue">308 import statements</span>
+      <span class="pkg-stat b-amber">#2 most imported</span>
+    </div>
+    <div class="import-list">
+<span class="kw">import</span> { <span class="fn">useTranslation</span> } <span class="kw">from</span> <span class="type">'react-i18next'</span>;                <span class="sep">// 307 usages</span>
+<span class="kw">import</span> { <span class="fn">initReactI18next</span> } <span class="kw">from</span> <span class="type">'react-i18next'</span>;                <span class="sep">// 1 usage (setup)</span>
+    </div>
+  </div>
+
+  <div class="pkg">
+    <div class="pkg-header">
+      <span class="pkg-name">i18next</span>
+      <span class="pkg-version">^25.7.3</span>
+    </div>
+    <div class="pkg-desc">Core i18n engine. Configured once in the i18n setup file.</div>
+    <div class="pkg-stats"><span class="pkg-stat b-blue">3 import statements</span></div>
+  </div>
+
+  <div class="pkg">
+    <div class="pkg-header">
+      <span class="pkg-name">i18next-browser-languagedetector</span>
+      <span class="pkg-version">^8.2.0</span>
+    </div>
+    <div class="pkg-desc">Auto-detects browser language for initial locale. Single import in i18n config.</div>
+    <div class="pkg-stats"><span class="pkg-stat b-blue">1 import statement</span></div>
+  </div>
+</div>
+
+<!-- 05 ICONS -->
+<div class="section" id="icons">
+  <div class="section-header">
+    <h2>05 &mdash; Icons</h2>
+    <span class="section-badge b-sky">Visual</span>
+  </div>
+
+  <div class="pkg">
+    <div class="pkg-header">
+      <span class="pkg-name">lucide-react</span>
+      <span class="pkg-version">0.487.0</span>
+    </div>
+    <div class="pkg-desc">
+      Tree-shakeable SVG icon library. Over 80 unique icons used across the platform.
+      Icons are imported individually for optimal bundle size.
+    </div>
+    <div class="pkg-stats">
+      <span class="pkg-stat b-blue">299 import statements</span>
+      <span class="pkg-stat b-sky">#3 most imported</span>
+    </div>
+    <div class="import-list">
+<span class="sep">// Top 30 most-used icons:</span>
+<span class="kw">import</span> {
+  <span class="comp">X</span><span class="sep">(82),</span> <span class="comp">Loader2</span><span class="sep">(55),</span> <span class="comp">Plus</span><span class="sep">(54),</span> <span class="comp">Search</span><span class="sep">(49),</span> <span class="comp">AlertCircle</span><span class="sep">(35),</span>
+  <span class="comp">ChevronRight</span><span class="sep">(28),</span> <span class="comp">Trash2</span><span class="sep">(27),</span> <span class="comp">Check</span><span class="sep">(26),</span> <span class="comp">FileText</span><span class="sep">(25),</span> <span class="comp">ChevronDown</span><span class="sep">(25),</span>
+  <span class="comp">Shield</span><span class="sep">(24),</span> <span class="comp">Building2</span><span class="sep">(24),</span> <span class="comp">Users</span><span class="sep">(21),</span> <span class="comp">Database</span><span class="sep">(21),</span> <span class="comp">Clock</span><span class="sep">(20),</span>
+  <span class="comp">User</span><span class="sep">(18),</span> <span class="comp">AlertTriangle</span><span class="sep">(18),</span> <span class="comp">ArrowLeft</span><span class="sep">(17),</span> <span class="comp">Target</span><span class="sep">(15),</span> <span class="comp">Settings</span><span class="sep">(15),</span>
+  <span class="comp">Lock</span><span class="sep">(14),</span> <span class="comp">Link</span><span class="sep">(13),</span> <span class="comp">Globe</span><span class="sep">(13),</span> <span class="comp">Eye</span><span class="sep">(13),</span> <span class="comp">CheckSquare</span><span class="sep">(13),</span>
+  <span class="comp">Bot</span><span class="sep">(13),</span> <span class="comp">RefreshCw</span><span class="sep">(12),</span> <span class="comp">Download</span><span class="sep">(12),</span> <span class="comp">LucideIcon</span><span class="sep">(type, 12),</span> <span class="comp">Copy</span><span class="sep">(10)</span>
+} <span class="kw">from</span> <span class="type">'lucide-react'</span>;
+    </div>
+  </div>
+</div>
+
+<!-- 06 ANIMATION -->
+<div class="section" id="animation">
+  <div class="section-header">
+    <h2>06 &mdash; Animation</h2>
+    <span class="section-badge b-purple">Motion</span>
+  </div>
+
+  <div class="pkg">
+    <div class="pkg-header">
+      <span class="pkg-name">motion</span>
+      <span class="pkg-version">12.23.24</span>
+    </div>
+    <div class="pkg-desc">
+      Formerly Framer Motion, now called "Motion". Used for layout animations, enter/exit transitions,
+      and micro-interactions. Import via <code>motion/react</code> subpath.
+    </div>
+    <div class="pkg-stats">
+      <span class="pkg-stat b-blue">60 import statements</span>
+    </div>
+    <div class="import-list">
+<span class="kw">import</span> { <span class="fn">motion</span><span class="sep">,</span> <span class="comp">AnimatePresence</span><span class="sep">,</span> <span class="comp">LayoutGroup</span> } <span class="kw">from</span> <span class="type">'motion/react'</span>;
+    </div>
+    <div style="margin-top:0.5rem;font-size:0.75rem;color:var(--fg3)">
+      <strong>Usage:</strong> motion&nbsp;(57) &middot; AnimatePresence&nbsp;(48) &middot; LayoutGroup&nbsp;(1)
+    </div>
+    <div class="note">
+      <strong>Rule:</strong> Always import from <code>'motion/react'</code>, not <code>'framer-motion'</code>.
+      Refer to it as "Motion" in docs/comments.
+    </div>
+  </div>
+</div>
+
+<!-- 07 TOAST -->
+<div class="section" id="toast">
+  <div class="section-header">
+    <h2>07 &mdash; Toast Notifications</h2>
+    <span class="section-badge b-emerald">Feedback</span>
+  </div>
+
+  <div class="pkg">
+    <div class="pkg-header">
+      <span class="pkg-name">sonner</span>
+      <span class="pkg-version">2.0.3</span>
+    </div>
+    <div class="pkg-desc">
+      Lightweight, opinionated toast library. Used for success, error, and info notifications throughout the app.
+    </div>
+    <div class="pkg-stats">
+      <span class="pkg-stat b-blue">100 import statements</span>
+      <span class="pkg-stat b-emerald">High usage across CRM</span>
+    </div>
+    <div class="import-list">
+<span class="kw">import</span> { <span class="fn">toast</span> } <span class="kw">from</span> <span class="type">'sonner'</span>;                <span class="sep">// 100 usages (toast.success, toast.error, etc.)</span>
+<span class="kw">import</span> { <span class="comp">Toaster</span> } <span class="kw">from</span> <span class="type">'sonner'</span>;              <span class="sep">// 1 usage (root mount)</span>
+    </div>
+  </div>
+</div>
+
+<!-- 08 REACT FLOW -->
+<div class="section" id="flow">
+  <div class="section-header">
+    <h2>08 &mdash; Visual Flow Canvas</h2>
+    <span class="section-badge b-amber">Streamline</span>
+  </div>
+
+  <div class="pkg">
+    <div class="pkg-header">
+      <span class="pkg-name">reactflow</span>
+      <span class="pkg-version">^11.11.4</span>
+    </div>
+    <div class="pkg-desc">
+      Node-based visual flow editor. Powers the Streamline workflow canvas and the ProcessDatabaseGraph
+      hub-spoke diagram in Deeproot. Always wrap instances in <code>&lt;ReactFlowProvider&gt;</code>.
+    </div>
+    <div class="pkg-stats">
+      <span class="pkg-stat b-blue">46 import statements</span>
+      <span class="pkg-stat b-amber">Core for Streamline</span>
+    </div>
+    <div class="import-list">
+<span class="sep">// Types</span>
+<span class="kw">import type</span> { <span class="type">Node</span><span class="sep">(31),</span> <span class="type">Edge</span><span class="sep">(20),</span> <span class="type">NodeProps</span><span class="sep">,</span> <span class="type">EdgeProps</span><span class="sep">,</span> <span class="type">Position</span><span class="sep">,</span>
+              <span class="type">Viewport</span><span class="sep">,</span> <span class="type">Connection</span><span class="sep">,</span> <span class="type">MarkerType</span><span class="sep">,</span> <span class="type">NodeChange</span><span class="sep">,</span> <span class="type">EdgeChange</span><span class="sep">,</span>
+              <span class="type">ReactFlowInstance</span> } <span class="kw">from</span> <span class="type">'reactflow'</span>;
+<span class="sep">// Components &amp; Hooks</span>
+<span class="kw">import</span> { <span class="comp">ReactFlowProvider</span><span class="sep">,</span> <span class="comp">Handle</span><span class="sep">,</span> <span class="comp">MiniMap</span><span class="sep">,</span>
+         <span class="fn">useReactFlow</span><span class="sep">,</span> <span class="fn">useNodesState</span><span class="sep">,</span> <span class="fn">useEdgesState</span><span class="sep">,</span> <span class="fn">useStore</span> } <span class="kw">from</span> <span class="type">'reactflow'</span>;
+    </div>
+  </div>
+</div>
+
+<!-- 09 DND -->
+<div class="section" id="dnd">
+  <div class="section-header">
+    <h2>09 &mdash; Drag &amp; Drop</h2>
+    <span class="section-badge b-purple">Interaction</span>
+  </div>
+
+  <div class="pkg">
+    <div class="pkg-header">
+      <span class="pkg-name">@dnd-kit/core + sortable + utilities</span>
+      <span class="pkg-version">^6.3.1 / ^10.0.0 / ^3.2.2</span>
+    </div>
+    <div class="pkg-desc">
+      Modular drag-and-drop toolkit. Used for reordering sidebar items, grid columns, and kanban cards.
+    </div>
+    <div class="pkg-stats">
+      <span class="pkg-stat b-blue">16 import statements (combined)</span>
+    </div>
+    <div class="import-list">
+<span class="sep">// @dnd-kit/core</span>
+<span class="kw">import</span> { <span class="comp">DndContext</span><span class="sep">,</span> <span class="fn">useDraggable</span><span class="sep">,</span> <span class="fn">useDroppable</span><span class="sep">,</span> <span class="fn">useSensors</span><span class="sep">,</span> <span class="fn">useSensor</span><span class="sep">,</span>
+         <span class="comp">PointerSensor</span><span class="sep">,</span> <span class="comp">KeyboardSensor</span><span class="sep">,</span> <span class="fn">closestCenter</span> } <span class="kw">from</span> <span class="type">'@dnd-kit/core'</span>;
+<span class="kw">import type</span> { <span class="type">DragEndEvent</span> } <span class="kw">from</span> <span class="type">'@dnd-kit/core'</span>;
+
+<span class="sep">// @dnd-kit/sortable</span>
+<span class="kw">import</span> { <span class="comp">SortableContext</span><span class="sep">,</span> <span class="fn">useSortable</span><span class="sep">,</span> <span class="fn">arrayMove</span><span class="sep">,</span>
+         <span class="fn">sortableKeyboardCoordinates</span><span class="sep">,</span> <span class="fn">verticalListSortingStrategy</span> } <span class="kw">from</span> <span class="type">'@dnd-kit/sortable'</span>;
+
+<span class="sep">// @dnd-kit/utilities</span>
+<span class="kw">import</span> { <span class="comp">CSS</span> } <span class="kw">from</span> <span class="type">'@dnd-kit/utilities'</span>;  <span class="sep">// 7 usages</span>
+    </div>
+  </div>
+</div>
+
+<!-- 10 SUPABASE -->
+<div class="section" id="supabase">
+  <div class="section-header">
+    <h2>10 &mdash; Backend / Auth</h2>
+    <span class="section-badge b-rose">Supabase</span>
+  </div>
+
+  <div class="pkg">
+    <div class="pkg-header">
+      <span class="pkg-name">@supabase/supabase-js</span>
+      <span class="pkg-version">^2.89.0</span>
+    </div>
+    <div class="pkg-desc">
+      Supabase client SDK for auth, realtime subscriptions, and storage. Wrapped in singleton instance
+      at <code>@/app/api/supabaseInstance</code>.
+    </div>
+    <div class="pkg-stats">
+      <span class="pkg-stat b-blue">4 direct imports</span>
+      <span class="pkg-stat b-rose">+80 via /utils/supabase/info</span>
+    </div>
+    <div class="import-list">
+<span class="kw">import</span> { <span class="fn">createClient</span> } <span class="kw">from</span> <span class="type">'@supabase/supabase-js'</span>;
+<span class="kw">import type</span> { <span class="type">RealtimeChannel</span><span class="sep">,</span> <span class="type">Session</span> } <span class="kw">from</span> <span class="type">'@supabase/supabase-js'</span>;
+
+<span class="sep">// Internal wrapper (80 usages)</span>
+<span class="kw">import</span> { <span class="fn">projectId</span><span class="sep">,</span> <span class="fn">publicAnonKey</span> } <span class="kw">from</span> <span class="type">'/utils/supabase/info'</span>;
+    </div>
+  </div>
+</div>
+
+<!-- 11 CHARTS -->
+<div class="section" id="charts">
+  <div class="section-header">
+    <h2>11 &mdash; Charts</h2>
+    <span class="section-badge b-sky">Visualization</span>
+  </div>
+
+  <div class="pkg">
+    <div class="pkg-header">
+      <span class="pkg-name">recharts</span>
+      <span class="pkg-version">2.15.2</span>
+    </div>
+    <div class="pkg-desc">
+      Composable chart library. Used in CRM dashboard analytics and MiniChart components.
+    </div>
+    <div class="pkg-stats"><span class="pkg-stat b-blue">2 import statements</span></div>
+    <div class="import-list">
+<span class="kw">import</span> { <span class="comp">PieChart</span><span class="sep">,</span> <span class="comp">Pie</span><span class="sep">,</span> <span class="comp">Cell</span> } <span class="kw">from</span> <span class="type">'recharts'</span>;
+<span class="kw">import</span> { <span class="comp">LineChart</span><span class="sep">,</span> <span class="comp">Line</span><span class="sep">,</span> <span class="comp">ResponsiveContainer</span><span class="sep">,</span> <span class="comp">YAxis</span><span class="sep">,</span> <span class="comp">Tooltip</span> } <span class="kw">from</span> <span class="type">'recharts'</span>;
+    </div>
+  </div>
+</div>
+
+<!-- 12 DATES -->
+<div class="section" id="dates">
+  <div class="section-header">
+    <h2>12 &mdash; Date Handling</h2>
+    <span class="section-badge b-emerald">Utilities</span>
+  </div>
+
+  <div class="pkg">
+    <div class="pkg-header">
+      <span class="pkg-name">date-fns</span>
+      <span class="pkg-version">3.6.0</span>
+    </div>
+    <div class="pkg-desc">
+      Tree-shakeable date utility library. Centralized in <code>@/app/utils/dateLocalization.ts</code>
+      with locale support for all 10 languages.
+    </div>
+    <div class="pkg-stats"><span class="pkg-stat b-blue">3 import statements (1 file)</span></div>
+    <div class="import-list">
+<span class="kw">import</span> { <span class="fn">format</span><span class="sep">,</span> <span class="fn">formatDistance</span><span class="sep">,</span> <span class="fn">formatRelative</span><span class="sep">,</span> <span class="fn">isToday</span><span class="sep">,</span> <span class="fn">isYesterday</span><span class="sep">,</span> <span class="fn">isTomorrow</span> } <span class="kw">from</span> <span class="type">'date-fns'</span>;
+<span class="kw">import</span> { <span class="fn">enUS</span><span class="sep">,</span> <span class="fn">nl</span><span class="sep">,</span> <span class="fn">de</span><span class="sep">,</span> <span class="fn">fr</span><span class="sep">,</span> <span class="fn">es</span><span class="sep">,</span> <span class="fn">it</span><span class="sep">,</span> <span class="fn">ar</span><span class="sep">,</span> <span class="fn">he</span><span class="sep">,</span> <span class="fn">zhCN</span><span class="sep">,</span> <span class="fn">ja</span> } <span class="kw">from</span> <span class="type">'date-fns/locale'</span>;
+    </div>
+  </div>
+</div>
+
+<!-- 13 MARKDOWN -->
+<div class="section" id="markdown">
+  <div class="section-header">
+    <h2>13 &mdash; Markdown Rendering</h2>
+    <span class="section-badge b-purple">Content</span>
+  </div>
+
+  <div class="pkg">
+    <div class="pkg-header">
+      <span class="pkg-name">react-markdown</span>
+      <span class="pkg-version">^10.1.0</span>
+    </div>
+    <div class="pkg-desc">Renders Markdown content in Second Brain pages and AI chat responses.</div>
+    <div class="pkg-stats"><span class="pkg-stat b-blue">3 import statements</span></div>
+  </div>
+
+  <div class="pkg">
+    <div class="pkg-header">
+      <span class="pkg-name">remark-gfm</span>
+      <span class="pkg-version">^4.0.1</span>
+    </div>
+    <div class="pkg-desc">GitHub Flavored Markdown plugin (tables, strikethrough, task lists, autolinks).</div>
+    <div class="pkg-stats"><span class="pkg-stat b-blue">2 import statements</span></div>
+  </div>
+</div>
+
+<!-- 14 VIRTUAL -->
+<div class="section" id="virtual">
+  <div class="section-header">
+    <h2>14 &mdash; List Virtualization</h2>
+    <span class="section-badge b-emerald">Performance</span>
+  </div>
+
+  <div class="pkg">
+    <div class="pkg-header">
+      <span class="pkg-name">@tanstack/react-virtual</span>
+      <span class="pkg-version">^3.13.18</span>
+    </div>
+    <div class="pkg-desc">
+      Renders only visible items in long lists. Used for VirtualizedStepList and large data grids (&gt;100 rows).
+    </div>
+    <div class="pkg-stats"><span class="pkg-stat b-blue">4 import statements</span></div>
+    <div class="import-list">
+<span class="kw">import</span> { <span class="fn">useVirtualizer</span> } <span class="kw">from</span> <span class="type">'@tanstack/react-virtual'</span>;
+    </div>
+  </div>
+</div>
+
+<!-- 15 GRAPH LAYOUT -->
+<div class="section" id="layout">
+  <div class="section-header">
+    <h2>15 &mdash; Graph Layout</h2>
+    <span class="section-badge b-amber">Layout Engine</span>
+  </div>
+
+  <div class="pkg">
+    <div class="pkg-header">
+      <span class="pkg-name">dagre</span>
+      <span class="pkg-version">^0.8.5</span>
+    </div>
+    <div class="pkg-desc">
+      Directed graph layout engine. Used for auto-layouting React Flow nodes (Streamline workflows,
+      ProcessDatabaseGraph hub-spoke diagrams).
+    </div>
+    <div class="pkg-stats"><span class="pkg-stat b-blue">2 import statements</span></div>
+    <div class="import-list">
+<span class="kw">import</span> <span class="fn">dagre</span> <span class="kw">from</span> <span class="type">'dagre'</span>;
+    </div>
+    <div class="note">
+      <strong>Dev dependency:</strong> <code>@types/dagre</code> (^0.7.53) provides TypeScript types.
+    </div>
+  </div>
+</div>
+
+<!-- 16 RADIX -->
+<div class="section" id="ui-primitives">
+  <div class="section-header">
+    <h2>16 &mdash; UI Primitives (Radix + shadcn/ui)</h2>
+    <span class="section-badge b-sky">Components</span>
+  </div>
+
+  <div class="pkg">
+    <div class="pkg-desc" style="margin-bottom:0.75rem">
+      The project includes a full set of <strong>shadcn/ui</strong> components in <code>src/app/components/ui/</code>
+      built on top of Radix UI primitives. These are <em>not</em> directly imported in Deeproot/Streamline page code —
+      they wrap Radix under the hood. The following Radix packages are installed:
+    </div>
+
+    <table class="dep-table" style="background:var(--card);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden">
+      <thead>
+        <tr><th>Package</th><th>Version</th><th>shadcn wrapper</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>@radix-ui/react-checkbox</code></td><td>1.1.4</td><td><code>ui/checkbox.tsx</code></td></tr>
+        <tr><td><code>@radix-ui/react-context-menu</code></td><td>2.2.6</td><td><code>ui/context-menu.tsx</code></td></tr>
+        <tr><td><code>@radix-ui/react-dialog</code></td><td>1.1.6</td><td><code>ui/dialog.tsx</code>, <code>ui/alert-dialog.tsx</code>, <code>ui/sheet.tsx</code></td></tr>
+        <tr><td><code>@radix-ui/react-select</code></td><td>2.1.6</td><td><code>ui/select.tsx</code></td></tr>
+        <tr><td><code>@radix-ui/react-separator</code></td><td>1.1.2</td><td><code>ui/separator.tsx</code></td></tr>
+        <tr><td><code>@radix-ui/react-slot</code></td><td>1.1.2</td><td><code>ui/button.tsx</code></td></tr>
+      </tbody>
+    </table>
+
+    <div style="margin-top:0.75rem;font-size:0.8125rem;color:var(--fg2)">
+      <strong>31 shadcn/ui wrapper files</strong> exist under <code>src/app/components/ui/</code>, covering:
+      accordion, alert, alert-dialog, aspect-ratio, avatar, badge, breadcrumb, button, checkbox,
+      collapsible, command, context-menu, dialog, dropdown-menu, form, hover-card, label, menubar,
+      navigation-menu, popover, progress, radio-group, scroll-area, select, separator, sheet,
+      sidebar, slider, switch, tabs, toggle, toggle-group, tooltip.
+    </div>
+  </div>
+</div>
+
+<!-- 17 CSS UTILITIES -->
+<div class="section" id="css">
+  <div class="section-header">
+    <h2>17 &mdash; CSS Utility Libraries</h2>
+    <span class="section-badge b-purple">Styling</span>
+  </div>
+
+  <div class="pkg">
+    <div class="pkg-desc" style="margin-bottom:0.75rem">
+      Used within the <code>ui/</code> layer (shadcn primitives). Not typically imported directly in page/feature code.
+    </div>
+
+    <table class="dep-table" style="background:var(--card);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden">
+      <thead>
+        <tr><th>Package</th><th>Version</th><th>Purpose</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>clsx</code></td><td>2.1.1</td><td>Conditional className construction</td></tr>
+        <tr><td><code>tailwind-merge</code></td><td>3.2.0</td><td>Deduplicates Tailwind classes (<code>cn()</code> helper)</td></tr>
+        <tr><td><code>class-variance-authority</code></td><td>0.7.1</td><td>Type-safe variant styling (<code>cva()</code>)</td></tr>
+        <tr><td><code>cmdk</code></td><td>1.1.1</td><td>Command palette primitive (<code>ui/command.tsx</code>)</td></tr>
+        <tr><td><code>tw-animate-css</code></td><td>1.3.8</td><td>Tailwind CSS animation utilities</td></tr>
+        <tr><td><code>@tailwindcss/typography</code></td><td>^0.5.19</td><td>Prose styling for Markdown content</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- 18 CODE HIGHLIGHTING -->
+<div class="section" id="code">
+  <div class="section-header">
+    <h2>18 &mdash; Code Highlighting</h2>
+    <span class="section-badge b-emerald">Content</span>
+  </div>
+
+  <div class="pkg">
+    <div class="pkg-header">
+      <span class="pkg-name">highlight.js</span>
+      <span class="pkg-version">^11.11.1</span>
+    </div>
+    <div class="pkg-desc">
+      Syntax highlighting for code blocks in Second Brain pages and AI responses.
+      Uses core + individual language imports for minimal bundle.
+    </div>
+    <div class="pkg-stats"><span class="pkg-stat b-blue">5 import statements (1 file)</span></div>
+    <div class="import-list">
+<span class="kw">import</span> <span class="fn">hljs</span> <span class="kw">from</span> <span class="type">'highlight.js/lib/core'</span>;
+<span class="kw">import</span> <span class="fn">typescript</span> <span class="kw">from</span> <span class="type">'highlight.js/lib/languages/typescript'</span>;
+<span class="kw">import</span> <span class="fn">javascript</span> <span class="kw">from</span> <span class="type">'highlight.js/lib/languages/javascript'</span>;
+<span class="kw">import</span> <span class="fn">json</span> <span class="kw">from</span> <span class="type">'highlight.js/lib/languages/json'</span>;
+<span class="kw">import</span> <span class="fn">css</span> <span class="kw">from</span> <span class="type">'highlight.js/lib/languages/css'</span>;
+    </div>
+  </div>
+</div>
+
+<!-- 19 MISC -->
+<div class="section" id="misc">
+  <div class="section-header">
+    <h2>19 &mdash; Miscellaneous Utilities</h2>
+    <span class="section-badge b-amber">Utilities</span>
+  </div>
+
+  <div class="pkg">
+    <div class="pkg-header">
+      <span class="pkg-name">zod</span>
+      <span class="pkg-version">^4.3.5</span>
+    </div>
+    <div class="pkg-desc">Runtime schema validation. Used for validating API responses and form data.</div>
+    <div class="pkg-stats"><span class="pkg-stat b-blue">2 import statements</span></div>
+    <div class="import-list">
+<span class="kw">import</span> { <span class="fn">z</span> } <span class="kw">from</span> <span class="type">'zod'</span>;
+    </div>
+  </div>
+
+  <div class="pkg">
+    <div class="pkg-header">
+      <span class="pkg-name">idb</span>
+      <span class="pkg-version">8.0.0</span>
+    </div>
+    <div class="pkg-desc">Lightweight IndexedDB wrapper. Used for offline workflow caching in Streamline.</div>
+    <div class="pkg-stats"><span class="pkg-stat b-blue">2 import statements</span></div>
+    <div class="import-list">
+<span class="kw">import</span> { <span class="fn">openDB</span> } <span class="kw">from</span> <span class="type">'idb'</span>;
+<span class="kw">import type</span> { <span class="type">IDBPDatabase</span><span class="sep">,</span> <span class="type">DBSchema</span> } <span class="kw">from</span> <span class="type">'idb'</span>;
+    </div>
+  </div>
+
+  <div class="pkg">
+    <div class="pkg-header">
+      <span class="pkg-name">html-to-image</span>
+      <span class="pkg-version">^1.11.13</span>
+    </div>
+    <div class="pkg-desc">Exports DOM nodes as PNG images. Used for workflow screenshot exports.</div>
+    <div class="pkg-stats"><span class="pkg-stat b-blue">1 import statement</span></div>
+    <div class="import-list">
+<span class="kw">import</span> { <span class="fn">toPng</span> } <span class="kw">from</span> <span class="type">'html-to-image'</span>;
+    </div>
+  </div>
+
+  <div class="pkg">
+    <div class="pkg-header">
+      <span class="pkg-name">re-resizable</span>
+      <span class="pkg-version">^6.11.2</span>
+    </div>
+    <div class="pkg-desc">Resizable panel component. Used for resizable sidebar/panel layouts.</div>
+    <div class="pkg-stats"><span class="pkg-stat b-blue">1 import statement</span></div>
+    <div class="import-list">
+<span class="kw">import</span> { <span class="comp">Resizable</span> } <span class="kw">from</span> <span class="type">'re-resizable'</span>;
+    </div>
+    <div class="note">
+      <strong>Rule:</strong> Do NOT use <code>react-resizable</code> — it does not work in this environment. Always use <code>re-resizable</code>.
+    </div>
+  </div>
+
+  <div class="pkg">
+    <div class="pkg-header">
+      <span class="pkg-name">react-arborist</span>
+      <span class="pkg-version">^3.4.3</span>
+    </div>
+    <div class="pkg-desc">Virtualized tree view component. Used in Deeproot sidebar tree views.</div>
+    <div class="pkg-stats"><span class="pkg-stat b-blue">1 import statement</span></div>
+    <div class="import-list">
+<span class="kw">import</span> { <span class="comp">Tree</span> } <span class="kw">from</span> <span class="type">'react-arborist'</span>;
+    </div>
+  </div>
+
+  <div class="pkg">
+    <div class="pkg-header">
+      <span class="pkg-name">web-vitals</span>
+      <span class="pkg-version">^5.1.0</span>
+    </div>
+    <div class="pkg-desc">Core Web Vitals measurement. Used for production performance monitoring.</div>
+    <div class="pkg-stats"><span class="pkg-stat b-blue">1 import statement</span></div>
+    <div class="import-list">
+<span class="kw">import</span> { <span class="fn">onCLS</span><span class="sep">,</span> <span class="fn">onLCP</span><span class="sep">,</span> <span class="fn">onTTFB</span><span class="sep">,</span> <span class="fn">onINP</span><span class="sep">,</span> <span class="fn">onFCP</span> } <span class="kw">from</span> <span class="type">'web-vitals'</span>;
+    </div>
+  </div>
+</div>
+
+<!-- 20 TESTING -->
+<div class="section" id="testing">
+  <div class="section-header">
+    <h2>20 &mdash; Testing Stack</h2>
+    <span class="section-badge b-rose">Dev Only</span>
+  </div>
+
+  <div class="pkg">
+    <div class="pkg-desc" style="margin-bottom:0.75rem">
+      All testing packages are <strong>devDependencies</strong>. Not included in production bundle.
+    </div>
+
+    <table class="dep-table" style="background:var(--card);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden">
+      <thead>
+        <tr><th>Package</th><th>Version</th><th>Purpose</th><th>Imports</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>vitest</code></td><td>^4.0.16</td><td>Test runner + assertions</td><td>24</td></tr>
+        <tr><td><code>@testing-library/react</code></td><td>^16.3.1</td><td>Component rendering + queries</td><td>19</td></tr>
+        <tr><td><code>@testing-library/user-event</code></td><td>^14.6.1</td><td>User interaction simulation</td><td>5</td></tr>
+        <tr><td><code>@testing-library/jest-dom</code></td><td>^6.9.1</td><td>Custom DOM matchers</td><td>setup</td></tr>
+        <tr><td><code>@vitest/ui</code></td><td>^4.0.16</td><td>Visual test runner UI</td><td>config</td></tr>
+        <tr><td><code>jsdom</code></td><td>^27.4.0</td><td>DOM environment for tests</td><td>config</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- 21 INTERNAL -->
+<div class="section" id="internal">
+  <div class="section-header">
+    <h2>21 &mdash; Internal Shared Modules</h2>
+    <span class="section-badge b-purple">Architecture</span>
+  </div>
+
+  <div class="pkg">
+    <div class="pkg-desc" style="margin-bottom:0.75rem">
+      These internal modules are imported across both <code>src/app/</code> and <code>src/modules/deeprootcore/</code>
+      and form the shared infrastructure layer.
+    </div>
+
+    <table class="dep-table" style="background:var(--card);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden">
+      <thead>
+        <tr><th>Module</th><th>Import Path</th><th>Imports</th><th>Purpose</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Logger</strong></td>
+          <td><code>@/app/utils/logger</code></td>
+          <td>187</td>
+          <td>Centralized logging with levels (info, warn, error)</td>
+        </tr>
+        <tr>
+          <td><strong>Supabase Info</strong></td>
+          <td><code>/utils/supabase/info</code></td>
+          <td>80</td>
+          <td>Exports <code>projectId</code>, <code>publicAnonKey</code></td>
+        </tr>
+        <tr>
+          <td><strong>Auth Token</strong></td>
+          <td><code>@/app/api/getAuthToken</code></td>
+          <td>62</td>
+          <td>Retrieves current auth token for API calls</td>
+        </tr>
+        <tr>
+          <td><strong>Workspace Context</strong></td>
+          <td><code>@/app/contexts/WorkspaceContext</code></td>
+          <td>49</td>
+          <td>Current workspace ID, org, user context</td>
+        </tr>
+        <tr>
+          <td><strong>Supabase Instance</strong></td>
+          <td><code>@/app/api/supabaseInstance</code></td>
+          <td>18</td>
+          <td>Singleton Supabase client</td>
+        </tr>
+        <tr>
+          <td><strong>Schema Types</strong></td>
+          <td><code>deeprootcore/types/schema</code></td>
+          <td>108</td>
+          <td>Database, Field, Record, RelationField types</td>
+        </tr>
+        <tr>
+          <td><strong>Performance Config</strong></td>
+          <td><code>deeprootcore/utils/performanceConfig</code></td>
+          <td>27</td>
+          <td>Cache times, stale times, pagination defaults</td>
+        </tr>
+        <tr>
+          <td><strong>Schema Query</strong></td>
+          <td><code>deeprootcore/hooks/queries/useWorkspaceSchemaQuery</code></td>
+          <td>22</td>
+          <td>Cached workspace schema (databases, fields, relations)</td>
+        </tr>
+        <tr>
+          <td><strong>Record Context</strong></td>
+          <td><code>deeprootcore/hooks/queries/useRecordContext</code></td>
+          <td>14</td>
+          <td>Fetches record + related data, helpers for relations</td>
+        </tr>
+        <tr>
+          <td><strong>CRM Navigation</strong></td>
+          <td><code>deeprootcore/hooks/useCrmNavigation</code></td>
+          <td>5</td>
+          <td>Navigate to orgs/contacts/missions/tasks/etc.</td>
+        </tr>
+        <tr>
+          <td><strong>CRM Databases</strong></td>
+          <td><code>deeprootcore/hooks/useCrmDatabases</code></td>
+          <td>9</td>
+          <td>Resolves orgs/contacts/missions/tasks DBs from schema</td>
+        </tr>
+        <tr>
+          <td><strong>CRM Detail Page</strong></td>
+          <td><code>deeprootcore/hooks/useCrmDetailPage</code></td>
+          <td>5</td>
+          <td>Shared logic for all detail pages (edit, save, sync)</td>
+        </tr>
+        <tr>
+          <td><strong>Realtime Sync</strong></td>
+          <td><code>deeprootcore/hooks/realtime</code></td>
+          <td>12</td>
+          <td>WebSocket-based live sync (nudge + polling fallback)</td>
+        </tr>
+        <tr>
+          <td><strong>Auth Context</strong></td>
+          <td><code>@/app/contexts/AuthContext</code></td>
+          <td>9</td>
+          <td>Authentication state, user info, logout</td>
+        </tr>
+        <tr>
+          <td><strong>Accessibility</strong></td>
+          <td><code>@/app/hooks/useAccessibility</code></td>
+          <td>13</td>
+          <td>Focus trapping, keyboard nav, ARIA management</td>
+        </tr>
+        <tr>
+          <td><strong>Fetch With Auth</strong></td>
+          <td><code>@/app/api/fetchWithAuth</code></td>
+          <td>6</td>
+          <td>Authenticated fetch wrapper with retry</td>
+        </tr>
+        <tr>
+          <td><strong>Lazy Pages</strong></td>
+          <td><code>@/app/utils/lazyPages</code></td>
+          <td>4</td>
+          <td>Lazy imports with retry logic for all route pages</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- 22 ARCHITECTURE -->
+<div class="section" id="arch">
+  <div class="section-header">
+    <h2>22 &mdash; Dependency Architecture Diagram</h2>
+    <span class="section-badge b-sky">Visual</span>
+  </div>
+
+  <div class="arch"><span class="h">EXTERNAL PACKAGES                    INTERNAL LAYERS                      FEATURE MODULES</span>
+
+<span class="h">Framework</span>                             <span class="e">Shared Infrastructure</span>
+  react (18.3.1)  ────────────────>   <span class="e">@/app/contexts/</span>
+  react-dom (18.3.1)                     WorkspaceContext  ───────────>   <span class="p">Deeproot CRM</span>
+  react-router (7.13)  ──────────>       AuthContext                        OrganisationDetailPage
+                                      <span class="e">@/app/api/</span>                          ContactDetailPage
+<span class="h">Server State</span>                             getAuthToken  ─────────────>       MissionDetailPage
+  @tanstack/react-query (5.x) ──>       supabaseInstance                    TaskDetailPage
+  @supabase/supabase-js (2.x) ──>       fetchWithAuth                    <span class="p">Deeproot Core</span>
+                                      <span class="e">@/app/utils/</span>                        DeeprootSidebar
+<span class="h">UI</span>                                       logger  ───────────────────>       DatabaseGrid
+  lucide-react (0.487)                   dateLocalization                    RecordDetailDialog
+  motion (12.23)                         lazyPages                           Second Brain
+  sonner (2.0)                        <span class="e">deeprootcore/types/</span>                  AI Agents
+  recharts (2.15)                        schema  ───────────────────>
+                                      <span class="e">deeprootcore/hooks/</span>               <span class="a">Streamline</span>
+<span class="h">Canvas &amp; Layout</span>                          queries/useWorkspaceSchema ──>       StreamlinePageInternal
+  reactflow (11.11) ─────────────>       queries/useRecordContext             WorkflowCanvas
+  dagre (0.8)                            useCrmNavigation                     WorkflowDialogs
+                                         useCrmDetailPage                     LeftPanel / RightPanel
+<span class="h">Interaction</span>                              realtime                          <span class="r">TopBar</span>
+  @dnd-kit/* ─────────────────────>   <span class="e">deeprootcore/utils/</span>                  TopBarModular
+  re-resizable                           performanceConfig                    ModuleSelector
+  react-arborist                         nudgeDispatch                        DeeprootBreadcrumb
+                                                                              BreadcrumbProjectSelector
+<span class="h">Content</span>
+  react-markdown + remark-gfm
+  highlight.js
+
+<span class="h">Validation &amp; Storage</span>
+  zod (4.x)
+  idb (8.0)
+</div>
+</div>
+
+<!-- 23 RULES -->
+<div class="section" id="rules">
+  <div class="section-header">
+    <h2>23 &mdash; Import Rules &amp; Conventions</h2>
+    <span class="section-badge b-rose">Mandatory</span>
+  </div>
+
+  <div class="pkg">
+    <table class="dep-table" style="background:var(--card);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden">
+      <thead>
+        <tr><th style="width:2rem">#</th><th>Rule</th><th>Why</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>1</strong></td>
+          <td>Use <code>react-router</code>, never <code>react-router-dom</code></td>
+          <td>Environment constraint; react-router-dom is not installed</td>
+        </tr>
+        <tr>
+          <td><strong>2</strong></td>
+          <td>Import Motion from <code>'motion/react'</code>, not <code>'framer-motion'</code></td>
+          <td>Package was renamed; old import path is deprecated</td>
+        </tr>
+        <tr>
+          <td><strong>3</strong></td>
+          <td>Import toast from <code>'sonner'</code>, not a custom wrapper</td>
+          <td>Direct import is the official pattern</td>
+        </tr>
+        <tr>
+          <td><strong>4</strong></td>
+          <td>Use <code>re-resizable</code>, never <code>react-resizable</code></td>
+          <td><code>react-resizable</code> does not work in this environment</td>
+        </tr>
+        <tr>
+          <td><strong>5</strong></td>
+          <td>No <code>useNavigate</code> in <code>useDeeprootNavigation.ts</code></td>
+          <td>Causes hooks-order crash; use <code>setSearchParams</code> instead</td>
+        </tr>
+        <tr>
+          <td><strong>6</strong></td>
+          <td>Absolute imports use <code>@/</code> prefix for <code>src/</code></td>
+          <td>Consistent import paths, avoids deep relative paths</td>
+        </tr>
+        <tr>
+          <td><strong>7</strong></td>
+          <td>Logger: always import from <code>@/app/utils/logger</code></td>
+          <td>Single logger instance with consistent formatting</td>
+        </tr>
+        <tr>
+          <td><strong>8</strong></td>
+          <td>Supabase info from <code>/utils/supabase/info</code> (absolute)</td>
+          <td>Special path; not an <code>@/</code> alias</td>
+        </tr>
+        <tr>
+          <td><strong>9</strong></td>
+          <td>Lazy-load components &gt;50KB or used conditionally</td>
+          <td>Bundle size optimization; use <code>lazy()</code> + <code>&lt;Suspense&gt;</code></td>
+        </tr>
+        <tr>
+          <td><strong>10</strong></td>
+          <td>i18n: new keys only in <code>en.json</code> + <code>nl.json</code></td>
+          <td>Fallback covers other 8 languages; batch translate later</td>
+        </tr>
+        <tr>
+          <td><strong>11</strong></td>
+          <td>Wrap every ReactFlow instance in <code>&lt;ReactFlowProvider&gt;</code></td>
+          <td>Required for hooks like <code>useReactFlow</code> to work</td>
+        </tr>
+        <tr>
+          <td><strong>12</strong></td>
+          <td>highlight.js: import core + individual languages only</td>
+          <td>Avoids loading 180+ language grammars into the bundle</td>
+        </tr>
+        <tr>
+          <td><strong>13</strong></td>
+          <td>date-fns: centralize in <code>dateLocalization.ts</code></td>
+          <td>Single locale-aware formatting layer; avoids duplication</td>
+        </tr>
+        <tr>
+          <td><strong>14</strong></td>
+          <td>File size limit: &lt;800 lines per file</td>
+          <td>Extract hooks, split components, create sub-modules</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+</div><!-- /container -->
+</body>
+</html>

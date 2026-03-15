@@ -2,24 +2,20 @@ import React, { useMemo } from "react";
 import { DeckGL } from "@deck.gl/react";
 import { ScatterplotLayer } from "@deck.gl/layers";
 
-const CLUSTER_PALETTE = [
-  [78, 129, 168],
-  [63, 156, 168],
-  [116, 146, 186],
-  [68, 114, 147],
-  [108, 173, 153],
-  [145, 158, 196],
-  [93, 173, 204],
-  [141, 170, 143],
-  [94, 144, 118],
-  [162, 148, 184],
-  [180, 142, 126],
-  [132, 168, 204],
+const ACCENT_PAIRS = [
+  { bg: [239, 246, 255], fg: [29, 78, 216] },
+  { bg: [250, 245, 255], fg: [126, 34, 206] },
+  { bg: [240, 253, 244], fg: [21, 128, 61] },
+  { bg: [254, 242, 242], fg: [185, 28, 28] },
+  { bg: [255, 251, 235], fg: [146, 64, 14] },
+  { bg: [253, 242, 248], fg: [157, 23, 77] },
+  { bg: [240, 253, 250], fg: [17, 94, 89] },
+  { bg: [238, 242, 255], fg: [55, 48, 163] },
 ];
 
-function colorForCluster(cluster) {
-  const idx = Math.abs(Number(cluster) || 0) % CLUSTER_PALETTE.length;
-  return CLUSTER_PALETTE[idx];
+function accentPairForCluster(cluster) {
+  const idx = Math.abs(Number(cluster) || 0) % ACCENT_PAIRS.length;
+  return ACCENT_PAIRS[idx];
 }
 
 function pointRadius(score) {
@@ -82,15 +78,16 @@ export default function ClusterPlotDeckGL({
         getPosition: (d) => [d.embedding2d.x, d.embedding2d.y],
         getRadius: (d) => pointRadius(d.match.totalScore),
         getFillColor: (d) => {
-          if (d.id === selectedId) return [255, 122, 44, 0];
-          if (d.id === hoverId) return [236, 248, 255, 210];
-          const [r, g, b] = colorForCluster(d.embedding2d.cluster);
-          return [r, g, b, hasSelection ? 72 : 138];
+          if (d.id === selectedId) return [59, 130, 246, 0];
+          if (d.id === hoverId) return [219, 234, 254, 230];
+          const { bg } = accentPairForCluster(d.embedding2d.cluster);
+          return [bg[0], bg[1], bg[2], hasSelection ? 130 : 198];
         },
         getLineColor: (d) => {
-          if (d.id === selectedId) return [255, 205, 160, 0];
-          if (d.id === hoverId) return [225, 244, 255, 230];
-          return [6, 32, 46, hasSelection ? 120 : 170];
+          if (d.id === selectedId) return [96, 165, 250, 0];
+          if (d.id === hoverId) return [37, 99, 235, 245];
+          const { fg } = accentPairForCluster(d.embedding2d.cluster);
+          return [fg[0], fg[1], fg[2], hasSelection ? 155 : 210];
         },
         lineWidthUnits: "pixels",
         lineWidthMinPixels: (d) => (d.id === hoverId ? 2 : 1),
@@ -115,7 +112,7 @@ export default function ClusterPlotDeckGL({
         radiusMaxPixels: 16,
         getPosition: (d) => [d.embedding2d.x, d.embedding2d.y],
         getRadius: (d) => pointRadius(d.match.totalScore) + 4,
-        getLineColor: [205, 237, 255, 240],
+        getLineColor: [59, 130, 246, 245],
         lineWidthUnits: "pixels",
         lineWidthMinPixels: 2,
       }),
@@ -130,8 +127,8 @@ export default function ClusterPlotDeckGL({
         radiusMaxPixels: 14,
         getPosition: (d) => [d.embedding2d.x, d.embedding2d.y],
         getRadius: (d) => pointRadius(d.match.totalScore) + 1,
-        getFillColor: [255, 122, 44, 230],
-        getLineColor: [255, 224, 195, 255],
+        getFillColor: [37, 99, 235, 238],
+        getLineColor: [219, 234, 254, 255],
         lineWidthUnits: "pixels",
         lineWidthMinPixels: 2,
       }),
@@ -146,7 +143,7 @@ export default function ClusterPlotDeckGL({
         radiusMaxPixels: 18,
         getPosition: (d) => [d.embedding2d.x, d.embedding2d.y],
         getRadius: (d) => pointRadius(d.match.totalScore) + 6,
-        getLineColor: [255, 166, 96, 240],
+        getLineColor: [96, 165, 250, 250],
         lineWidthUnits: "pixels",
         lineWidthMinPixels: 2,
       }),
