@@ -11,6 +11,15 @@
   --rb-accent-soft: rgba(37, 99, 235, 0.18);
   --rb-selected: rgba(37, 99, 235, 0.14);
   --rb-selected-border: rgba(37, 99, 235, 0.5);
+  --rb-surface-soft: rgba(255, 255, 255, 0.86);
+  --rb-surface-soft-end: rgba(255, 255, 255, 0.78);
+  --rb-surface-strong: rgba(255, 255, 255, 0.92);
+  --rb-surface-strong-end: rgba(255, 255, 255, 0.86);
+  --rb-list-header-border: rgba(148, 163, 184, 0.2);
+  --rb-row-border: rgba(148, 163, 184, 0.14);
+  --rb-row-hover: rgba(15, 23, 42, 0.06);
+  --rb-crit-border: rgba(148, 163, 184, 0.24);
+  --rb-crit-bg: rgba(255, 255, 255, 0.55);
   --rb-shadow-glass:
     0 8px 24px rgba(2, 6, 23, 0.08),
     0 2px 8px rgba(2, 6, 23, 0.05),
@@ -34,36 +43,43 @@
   --rb-accent-soft: rgba(96, 165, 250, 0.2);
   --rb-selected: rgba(96, 165, 250, 0.18);
   --rb-selected-border: rgba(96, 165, 250, 0.58);
+  --rb-surface-soft: rgba(31, 41, 55, 0.82);
+  --rb-surface-soft-end: rgba(17, 24, 39, 0.78);
+  --rb-surface-strong: rgba(31, 41, 55, 0.9);
+  --rb-surface-strong-end: rgba(17, 24, 39, 0.84);
+  --rb-list-header-border: rgba(75, 85, 99, 0.45);
+  --rb-row-border: rgba(75, 85, 99, 0.42);
+  --rb-row-hover: rgba(148, 163, 184, 0.16);
+  --rb-crit-border: rgba(75, 85, 99, 0.55);
+  --rb-crit-bg: rgba(17, 24, 39, 0.48);
   --rb-shadow-glass:
     0 8px 24px rgba(0, 0, 0, 0.35),
     0 2px 8px rgba(0, 0, 0, 0.24),
     0 0 0 1px rgba(255, 255, 255, 0.06);
-  --rb-crit-explain: #d1d5db;
+  --rb-crit-explain: #e5e7eb;
   --rb-tooltip-bg: rgba(17, 24, 39, 0.94);
   --rb-tooltip-fg: #f3f4f6;
   --rb-tooltip-border: rgba(96, 165, 250, 0.42);
 }
 
 .theme-toggle {
-  position: fixed;
-  top: 1rem;
-  right: 1rem;
-  z-index: 999;
   width: 2.5rem;
   height: 2.5rem;
   border-radius: 0.75rem;
   border: 1px solid var(--rb-border);
-  background: var(--rb-card-strong);
+  background: var(--rb-surface-strong);
   color: var(--rb-foreground);
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  box-shadow: var(--rb-shadow-glass);
+  flex-shrink: 0;
+  transition: transform 0.15s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .theme-toggle:hover {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  transform: scale(1.03);
 }
 
 .layout {
@@ -151,7 +167,7 @@
   overflow: hidden;
   border-radius: 18px;
   border: 1px solid var(--rb-border);
-  background: linear-gradient(180deg, var(--rb-card), rgba(255, 255, 255, 0.8));
+  background: linear-gradient(180deg, var(--rb-surface-soft), var(--rb-surface-soft-end));
   box-shadow: var(--rb-shadow-glass);
 }
 
@@ -177,7 +193,7 @@
   min-height: 0;
   border-radius: 16px;
   border: 1px solid var(--rb-border);
-  background: linear-gradient(180deg, var(--rb-card-strong), rgba(255, 255, 255, 0.86));
+  background: linear-gradient(180deg, var(--rb-surface-strong), var(--rb-surface-strong-end));
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   box-shadow: var(--rb-shadow-glass);
@@ -190,7 +206,7 @@
 
 .listHeader {
   padding: 14px 16px 10px;
-  border-bottom: 1px solid rgba(148, 163, 184, 0.2);
+  border-bottom: 1px solid var(--rb-list-header-border);
 }
 
 .listTitle,
@@ -227,13 +243,13 @@
   gap: 10px;
   align-items: center;
   padding: 11px 14px;
-  border-bottom: 1px solid rgba(148, 163, 184, 0.14);
+  border-bottom: 1px solid var(--rb-row-border);
   cursor: pointer;
   transition: background 0.16s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .row:hover {
-  background: color-mix(in oklab, var(--rb-foreground) 8%, transparent);
+  background: var(--rb-row-hover);
 }
 
 .row.sel {
@@ -310,8 +326,8 @@
 .critRow {
   padding: 11px;
   border-radius: 12px;
-  border: 1px solid rgba(148, 163, 184, 0.24);
-  background: color-mix(in oklab, var(--rb-card-strong) 85%, transparent);
+  border: 1px solid var(--rb-crit-border);
+  background: var(--rb-crit-bg);
 }
 
 .critHead {
